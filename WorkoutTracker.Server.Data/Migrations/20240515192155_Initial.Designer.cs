@@ -12,8 +12,8 @@ using WorkoutTracker.Server.Data;
 namespace WorkoutTracker.Server.Data.Migrations
 {
     [DbContext(typeof(WorkoutTrackerDbContext))]
-    [Migration("20240228201825_initial")]
-    partial class initial
+    [Migration("20240515192155_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
