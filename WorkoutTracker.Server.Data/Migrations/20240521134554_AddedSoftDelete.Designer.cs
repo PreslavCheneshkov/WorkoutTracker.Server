@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkoutTracker.Server.Data;
 
@@ -11,9 +12,11 @@ using WorkoutTracker.Server.Data;
 namespace WorkoutTracker.Server.Data.Migrations
 {
     [DbContext(typeof(WorkoutTrackerDbContext))]
-    partial class WorkoutTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521134554_AddedSoftDelete")]
+    partial class AddedSoftDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,11 +169,12 @@ namespace WorkoutTracker.Server.Data.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ExerciseNameId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TrainingSessionId")
                         .HasColumnType("int");
@@ -196,7 +200,7 @@ namespace WorkoutTracker.Server.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -216,7 +220,7 @@ namespace WorkoutTracker.Server.Data.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ExerciseId")
+                    b.Property<int?>("ExerciseId")
                         .HasColumnType("int");
 
                     b.Property<int>("ExerciseParameterNameId")
@@ -275,9 +279,6 @@ namespace WorkoutTracker.Server.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
 
                     b.Property<string>("WorkoutTrackerUserId")
@@ -420,19 +421,15 @@ namespace WorkoutTracker.Server.Data.Migrations
 
             modelBuilder.Entity("WorkoutTracker.Server.Data.Entities.Exercise.ExerciseParameter", b =>
                 {
-                    b.HasOne("WorkoutTracker.Server.Data.Entities.Exercise.Exercise", "Exercise")
+                    b.HasOne("WorkoutTracker.Server.Data.Entities.Exercise.Exercise", null)
                         .WithMany("ExerciseParameters")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ExerciseId");
 
                     b.HasOne("WorkoutTracker.Server.Data.Entities.Exercise.ExerciseParameterName", "ExerciseParameterName")
                         .WithMany()
                         .HasForeignKey("ExerciseParameterNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Exercise");
 
                     b.Navigation("ExerciseParameterName");
                 });

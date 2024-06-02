@@ -30,6 +30,10 @@ namespace WorkoutTracker.Server.Data
 
         public DbSet<Exercise> Exercises { get; set; }
 
+        public DbSet<ExerciseName> ExerciseNames { get; set; }
+
         public DbSet<ExerciseParameter> ExerciseParameters { get; set; }
+
+        public DbSet<ExerciseParameterName> ExerciseParameterNames { get; set; }
     }
 }
