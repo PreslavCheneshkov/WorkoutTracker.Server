@@ -44,6 +44,7 @@ namespace WorkoutTracker.Server.WebAPI
 
             builder.Services.AddScoped<IExerciseService, ExerciseService>();
             builder.Services.AddScoped<ITrainingSessionService, TrainingSessionService>();
+            builder.Services.AddSingleton<ConfigurationManager>(builder.Configuration);
 
             var app = builder.Build();
             app.UseDeveloperExceptionPage();
