@@ -179,7 +179,7 @@ namespace WorkoutTracker.Server.Data.Migrations
 
                     b.HasIndex("TrainingSessionId");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Exercises", (string)null);
                 });
 
             modelBuilder.Entity("WorkoutTracker.Server.Data.Entities.Exercise.ExerciseName", b =>
@@ -202,7 +202,7 @@ namespace WorkoutTracker.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExerciseNames");
+                    b.ToTable("ExerciseNames", (string)null);
                 });
 
             modelBuilder.Entity("WorkoutTracker.Server.Data.Entities.Exercise.ExerciseParameter", b =>
@@ -234,7 +234,7 @@ namespace WorkoutTracker.Server.Data.Migrations
 
                     b.HasIndex("ExerciseParameterNameId");
 
-                    b.ToTable("ExerciseParameters");
+                    b.ToTable("ExerciseParameters", (string)null);
                 });
 
             modelBuilder.Entity("WorkoutTracker.Server.Data.Entities.Exercise.ExerciseParameterName", b =>
@@ -257,7 +257,7 @@ namespace WorkoutTracker.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExerciseParameterNames");
+                    b.ToTable("ExerciseParameterNames", (string)null);
                 });
 
             modelBuilder.Entity("WorkoutTracker.Server.Data.Entities.Training.TrainingSession", b =>
@@ -288,7 +288,7 @@ namespace WorkoutTracker.Server.Data.Migrations
 
                     b.HasIndex("WorkoutTrackerUserId");
 
-                    b.ToTable("TrainingSessions");
+                    b.ToTable("TrainingSessions", (string)null);
                 });
 
             modelBuilder.Entity("WorkoutTracker.Server.Data.Entities.User.WorkoutTrackerUser", b =>

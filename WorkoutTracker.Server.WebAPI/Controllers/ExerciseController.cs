@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WorkoutTracker.Server.Core.ServiceModels.Exercise;
 using WorkoutTracker.Server.Core.Services.Contracts;
 using WorkoutTracker.Server.Data.Entities.User;
 using WorkoutTracker.Server.WebAPI.ApiModels.Input;
@@ -20,7 +21,7 @@ namespace WorkoutTracker.Server.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("exercise/parameter/name/{parameterNameValue}")]
+        [Route("parameter/name/{parameterNameValue}")]
         public async Task<IActionResult> ExerciseParameterName(string parameterNameValue)
         {
             if (string.IsNullOrEmpty(parameterNameValue))
@@ -28,20 +29,28 @@ namespace WorkoutTracker.Server.WebAPI.Controllers
                 return BadRequest();
             }
 
-            await _exerciseService.AddExerciseParameterName(parameterNameValue);
+            await _exerciseService.AddExerciseParameterNameAsync(parameterNameValue);
             return Ok();
         }
 
         [HttpGet]
-        [Route("exercise/parameter/name/all")]
+        [Route("parameter/name/all")]
         public async Task<IActionResult> ExerciseParameterName()
         {
-            var exerciseParameterNames = await _exerciseService.GetExerciseParameterNames();
+            var exerciseParameterNames = await _exerciseService.GetExerciseParameterNamesAsync();
             return Ok(exerciseParameterNames);
         }
 
+        [HttpGet]
+        [Route("name")]
+        public async Task<IActionResult> ExercisNames()
+        {
+            var exerciseNames = await _exerciseService.GetAllExerciseNamesAsync();
+            return Ok(exerciseNames);
+        }
+
         [HttpPost]
-        [Route("exercise/name/{nameValue}")]
+        [Route("name/{nameValue}")]
         public async Task<IActionResult> ExerciseName(string nameValue)
         {
             if (string.IsNullOrEmpty(nameValue))
@@ -49,19 +58,18 @@ namespace WorkoutTracker.Server.WebAPI.Controllers
                 return BadRequest();
             }
 
-            var id = await _exerciseService.AddExerciseName(nameValue);
+            var id = await _exerciseService.AddExerciseNameAsync(nameValue);
             return Ok(id);
         }
 
         [HttpPost]
-        [Route("exercise")]
         public async Task<IActionResult> AddExercise(ExerciseInputModel exerciseInput)
         {
-            var id = await _exerciseService.AddExercise(new Core.ServiceModels.ExerciseServiceModel
+            var id = await _exerciseService.AddExerciseAsync(new ExerciseServiceModel
             {
                 ExerciseNameId = exerciseInput.ExerciseNameId,
                 TrainingSessionId = exerciseInput.TrainingSessionId,
-                ExerciseParameters = exerciseInput.ExerciseParameters.Select(x => new Core.ServiceModels.ExerciseParameterServiceModel
+                ExerciseParameters = exerciseInput.ExerciseParameters.Select(x => new ExerciseParameterServiceModel
                 {
                     NameId = x.NameId,
                     Value = x.Value
