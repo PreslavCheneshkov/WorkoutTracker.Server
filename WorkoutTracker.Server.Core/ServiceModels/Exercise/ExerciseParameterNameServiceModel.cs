@@ -1,4 +1,4 @@
-﻿namespace WorkoutTracker.Server.Core.ServiceModels
+﻿namespace WorkoutTracker.Server.Core.ServiceModels.Exercise
 {
     public class ExerciseParameterNameServiceModel
     {
