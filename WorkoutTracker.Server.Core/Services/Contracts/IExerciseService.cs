@@ -1,15 +1,17 @@
-﻿using WorkoutTracker.Server.Core.ServiceModels;
+﻿using WorkoutTracker.Server.Core.ServiceModels.Exercise;
 
 namespace WorkoutTracker.Server.Core.Services.Contracts
 {
     public interface IExerciseService
     {
-        Task AddExerciseParameterName(string exerciseParameterNameValue);
+        Task AddExerciseParameterNameAsync(string exerciseParameterNameValue);
 
-        Task<IList<ExerciseParameterNameServiceModel>> GetExerciseParameterNames();
+        Task<IList<ExerciseParameterNameServiceModel>> GetExerciseParameterNamesAsync();
 
-        Task<int> AddExerciseName(string exerciseNameValue);
+        Task<int> AddExerciseNameAsync(string exerciseNameValue);
 
-        Task<int> AddExercise(ExerciseServiceModel exerciseInput);
+        Task<int> AddExerciseAsync(ExerciseServiceModel exerciseInput);
+
+        Task<List<ExerciseNameServiceModel>> GetAllExerciseNamesAsync();
     }
 }

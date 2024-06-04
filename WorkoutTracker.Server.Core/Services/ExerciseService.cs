@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkoutTracker.Server.Core.ServiceModels;
+using WorkoutTracker.Server.Core.ServiceModels.Exercise;
 using WorkoutTracker.Server.Core.Services.Contracts;
 using WorkoutTracker.Server.Data;
 using WorkoutTracker.Server.Data.Entities.Exercise;
@@ -15,7 +15,7 @@ namespace WorkoutTracker.Server.Core.Services
             _db = db;
         }
 
-        public async Task<int> AddExercise(ExerciseServiceModel exerciseInput)
+        public async Task<int> AddExerciseAsync(ExerciseServiceModel exerciseInput)
         {
             var exercise = new Exercise()
             {
@@ -38,7 +38,7 @@ namespace WorkoutTracker.Server.Core.Services
             return exercise.Id;
         }
 
-        public async Task<int> AddExerciseName(string exerciseNameValue)
+        public async Task<int> AddExerciseNameAsync(string exerciseNameValue)
         {
             var exerciseName = new ExerciseName
             {
@@ -49,7 +49,7 @@ namespace WorkoutTracker.Server.Core.Services
             return exerciseName.Id;
         }
 
-        public async Task AddExerciseParameterName(string exerciseParameterNameValue)
+        public async Task AddExerciseParameterNameAsync(string exerciseParameterNameValue)
         {
             var exerciseParameterName = new ExerciseParameterName()
             {
@@ -59,7 +59,16 @@ namespace WorkoutTracker.Server.Core.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task<IList<ExerciseParameterNameServiceModel>> GetExerciseParameterNames()
+        public async Task<List<ExerciseNameServiceModel>> GetAllExerciseNamesAsync()
+        {
+            return await _db.ExerciseNames.Where(x => !x.IsDeleted).Select(x => new ExerciseNameServiceModel
+            {
+                Id = x.Id,
+                Value = x.Value
+            }).ToListAsync();
+        }
+
+        public async Task<IList<ExerciseParameterNameServiceModel>> GetExerciseParameterNamesAsync()
         {
             return await _db.ExerciseParameterNames.Where(x => !x.IsDeleted).Select(x => new ExerciseParameterNameServiceModel
             {
