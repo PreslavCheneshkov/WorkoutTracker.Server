@@ -7,7 +7,6 @@ namespace WorkoutTracker.Server.WebAPI.Controllers
     [Route("[controller]")]
     public class HomeController : Controller
     {
-        [Authorize]
         [HttpGet(Name = "Index")]
         public IActionResult Index()
         {
