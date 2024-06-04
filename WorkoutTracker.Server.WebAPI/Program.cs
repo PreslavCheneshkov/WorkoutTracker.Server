@@ -44,16 +44,12 @@ namespace WorkoutTracker.Server.WebAPI
 
             builder.Services.AddScoped<IExerciseService, ExerciseService>();
             builder.Services.AddScoped<ITrainingSessionService, TrainingSessionService>();
-            builder.Services.AddSingleton<ConfigurationManager>(builder.Configuration);
 
             var app = builder.Build();
-            app.UseDeveloperExceptionPage();
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            //}
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
             app.UseCors(options =>
             {
                 options.AllowAnyOrigin();
