@@ -4,6 +4,8 @@
     {
         Task<int> StartTrainingSession(string userId);
 
-        Task EndTrainingSession(int id);
+        Task<TimeSpan> EndTrainingSession(int id);
+
+        Task<bool> HasActiveTrainingSession(string userId);
     }
 }
