@@ -10,10 +10,12 @@ namespace WorkoutTracker.Server.Data.Entities.Training
         [Key]
         public int Id { get; set; }
 
-        public DateTime? DateTime { get; set; }
+        public DateTime Started { get; set; }
 
         [Required]
         public bool IsFinished { get; set; }
+
+        public long? DurationTicks { get; set; }
 
         [Required]
         [ForeignKey(nameof(WorkoutTrackerUser))]
