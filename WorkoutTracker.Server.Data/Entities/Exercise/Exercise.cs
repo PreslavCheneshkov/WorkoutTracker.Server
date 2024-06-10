@@ -14,6 +14,8 @@ namespace WorkoutTracker.Server.Data.Entities.Exercise
         [ForeignKey(nameof(ExerciseName))]
         public int ExerciseNameId { get; set; }
 
+        public ExerciseName ExerciseName { get; set; } = null!;
+
         [Required]
         [ForeignKey(nameof(TrainingSession))]
         public int TrainingSessionId { get; set; }

@@ -17,6 +17,10 @@ namespace WorkoutTracker.Server.Data.Entities.Training
 
         public long? DurationTicks { get; set; }
 
+        public string? Name { get; set; }
+
+        public string? Comment { get; set; }
+
         [Required]
         [ForeignKey(nameof(WorkoutTrackerUser))]
         public string WorkoutTrackerUserId { get; set; } = null!;
