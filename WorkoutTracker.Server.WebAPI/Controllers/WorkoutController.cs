@@ -23,7 +23,11 @@ public class WorkoutController : WorkoutTrackerController
     [Route("Start/{name}")]
     public async Task<IActionResult> Start(string? name)
     {
-        var userId = _userManager.Users.First(u => u.UserName == User!.Identity!.Name!).Id;
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
         var workoutId = await _trainingSessionService.StartTrainingSession(userId, name);
         return Ok(new StartWorkoutResult
         {
@@ -49,13 +53,17 @@ public class WorkoutController : WorkoutTrackerController
     [Route("HasActive")]
     public async Task<IActionResult> HasActiveWorkout()
     {
-        var userId = _userManager.Users.First(u => u.UserName == User!.Identity!.Name!).Id;
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
         var activeWorkout = await _trainingSessionService.HasActiveTrainingSession(userId);
         if (activeWorkout is null)
         {
             return NotFound();
         }
-        if (!activeWorkout.HasActiveTrainingSesion)
+        if (!activeWorkout.HasActiveTrainingSesion || activeWorkout.TrainingSession is null)
         {
             return Ok(new HasActiveWorkoutOutputModel
             {
@@ -66,31 +74,7 @@ public class WorkoutController : WorkoutTrackerController
         return Ok(new HasActiveWorkoutOutputModel
         {
             HasActiveWorkout = activeWorkout.HasActiveTrainingSesion,
-            Workout = new TrainingSessionDetailsOutputModel
-            {
-                Id = activeWorkout.TrainingSession.Id,
-                Comment = activeWorkout.TrainingSession.Comment,
-                Name = activeWorkout.TrainingSession.Name,
-                Started = activeWorkout.TrainingSession.Started,
-                IsFinished = activeWorkout.TrainingSession.IsFinished,
-                Duration = new WorkoutDurationOutput
-                {
-                    Days = activeWorkout.TrainingSession.Duration?.Days ?? 0,
-                    Hours = activeWorkout.TrainingSession.Duration?.Hours ?? 0,
-                    Minutes = activeWorkout.TrainingSession.Duration?.Minutes ?? 0,
-                    Seconds = activeWorkout.TrainingSession.Duration?.Seconds ?? 0,
-                },
-                Exercises = activeWorkout.TrainingSession.Exercises.Select(e => new ExerciseDetailsOutputModel
-                {
-                    Id = e.Id,
-                    Name = e.Name,
-                    Parameters = e.Parameters.Select(ep => new ExerciseParameterDetailsOutputModel
-                    {
-                        Name = ep.Name,
-                        Value = ep.Value
-                    })
-                })
-            }
+            Workout = new TrainingSessionDetailsOutputModel(activeWorkout.TrainingSession)
         });
     }
 
@@ -98,36 +82,39 @@ public class WorkoutController : WorkoutTrackerController
     [Route("Details/{workoutId}")]
     public async Task<IActionResult> Details(int workoutId)
     {
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+        // todo: check if the workout is of the same user
         var trainingSession = await _trainingSessionService.GetTrainingSessionDetailsAsync(workoutId);
         if (trainingSession is null)
         {
             return NotFound();
         }
 
-        return Ok(new TrainingSessionDetailsOutputModel
+        return Ok(new TrainingSessionDetailsOutputModel(trainingSession));
+    }
+
+    [HttpGet]
+    [Route("MyWorkouts")]
+    public async Task<IActionResult> MyWorkouts()
+    {
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
         {
-            Id = trainingSession.Id,
-            Comment = trainingSession.Comment,
-            Name = trainingSession.Name,
-            Started = trainingSession.Started,
-            IsFinished = trainingSession.IsFinished,
-            Duration = new WorkoutDurationOutput
-            {
-                Days = trainingSession.Duration?.Days ?? 0,
-                Hours = trainingSession.Duration?.Hours ?? 0,
-                Minutes = trainingSession.Duration?.Minutes ?? 0,
-                Seconds = trainingSession.Duration?.Seconds ?? 0,
-            },
-            Exercises = trainingSession.Exercises.Select(e => new ExerciseDetailsOutputModel
-            {
-                Id = e.Id,
-                Name = e.Name,
-                Parameters = e.Parameters.Select(p => new ExerciseParameterDetailsOutputModel
-                {
-                    Name = p.Name,
-                    Value = p.Value
-                })
-            })
-        });
+            return Unauthorized();
+        }
+        var workouts = await _trainingSessionService.GetWorkoutsForUser(userId);
+        if (workouts is null)
+        {
+            return NotFound();
+        }
+        if (!workouts.Any())
+        {
+            return NoContent();
+        }
+        return Ok(workouts.Select(w => new WorkoutListOutputModel(w)));
     }
 }
