@@ -11,4 +11,6 @@ public interface ITrainingSessionService
     Task<HasActiveTrainingSesionServiceModel> HasActiveTrainingSession(string userId);
 
     Task<TrainingSessionDetailsServiceModel?> GetTrainingSessionDetailsAsync(int trainingSessionId);
+
+    Task<IEnumerable<WorkoutListServiceModel>> GetWorkoutsForUser(string userId);
 }
