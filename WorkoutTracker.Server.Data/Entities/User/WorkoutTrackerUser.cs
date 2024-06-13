@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace WorkoutTracker.Server.Data.Entities.User
+namespace WorkoutTracker.Server.Data.Entities.User;
+
+public class WorkoutTrackerUser : IdentityUser
 {
-    public class WorkoutTrackerUser : IdentityUser
-    {
-    }
 }
