@@ -7,64 +7,64 @@ using WorkoutTracker.Server.Core.Services.Contracts;
 using WorkoutTracker.Server.Data;
 using WorkoutTracker.Server.Data.Entities.User;
 
-namespace WorkoutTracker.Server.WebAPI
+namespace WorkoutTracker.Server.WebAPI;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<WorkoutTrackerDbContext>(options => options.UseSqlServer(connectionString));
+
+        builder.Services.AddAuthorization();
+        builder.Services.AddIdentityApiEndpoints<WorkoutTrackerUser>(options =>
         {
-            var builder = WebApplication.CreateBuilder(args);
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireDigit = false;
+        }).AddEntityFrameworkStores<WorkoutTrackerDbContext>();
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<WorkoutTrackerDbContext>(options => options.UseSqlServer(connectionString));
-
-            builder.Services.AddAuthorization();
-            builder.Services.AddIdentityApiEndpoints<WorkoutTrackerUser>(options =>
+        builder.Services.AddControllers();
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<WorkoutTrackerDbContext>();
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
+                In = ParameterLocation.Header,
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey
             });
+            options.OperationFilter<SecurityRequirementsOperationFilter>();
+        });
 
-            builder.Services.AddScoped<IExerciseService, ExerciseService>();
-            builder.Services.AddScoped<ITrainingSessionService, TrainingSessionService>();
+        builder.Services.AddScoped<IExerciseService, ExerciseService>();
+        builder.Services.AddScoped<ITrainingSessionService, TrainingSessionService>();
+        builder.Services.AddScoped<IUserService, UserService>();
 
-            var app = builder.Build();
+        var app = builder.Build();
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
-            app.UseCors(options =>
-            {
-                options.AllowAnyOrigin();
-                options.AllowAnyMethod();
-                options.AllowAnyHeader();
-            });
-            app.MapIdentityApi<WorkoutTrackerUser>();
-            app.UseHttpsRedirection();
+        app.UseCors(options =>
+        {
+            options.AllowAnyOrigin();
+            options.AllowAnyMethod();
+            options.AllowAnyHeader();
+        });
+        app.MapIdentityApi<WorkoutTrackerUser>();
+        app.UseHttpsRedirection();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-            app.MapControllers();
+        app.MapControllers();
 
-            app.Run();
-        }
+        app.Run();
     }
 }
