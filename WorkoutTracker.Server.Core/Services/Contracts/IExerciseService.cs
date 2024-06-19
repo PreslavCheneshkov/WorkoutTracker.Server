@@ -13,5 +13,7 @@ namespace WorkoutTracker.Server.Core.Services.Contracts
         Task<int> AddExerciseAsync(ExerciseServiceModel exerciseInput);
 
         Task<List<ExerciseNameServiceModel>> GetAllExerciseNamesAsync();
+
+        Task<IEnumerable<ExerciseStatServiceModel>> GetStatsForExerciseAsync(int exerciseNameId, string userId, DateTime? startDate, DateTime? endDate);
     }
 }

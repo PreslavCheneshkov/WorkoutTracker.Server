@@ -76,5 +76,35 @@ namespace WorkoutTracker.Server.Core.Services
                 Value = x.Value
             }).ToListAsync();
         }
+
+        public async Task<IEnumerable<ExerciseStatServiceModel>> GetStatsForExerciseAsync(int exerciseNameId, string userId, DateTime? startDate, DateTime? endDate)
+        {
+            var exercisesQuery = _db.Exercises.Where(e => e.ExerciseNameId == exerciseNameId && e.TrainingSession.WorkoutTrackerUserId == userId);
+            if (startDate != null)
+            {
+                exercisesQuery = exercisesQuery.Where(e => e.TrainingSession.Started >= startDate);
+            }
+            if (endDate != null)
+            {
+                exercisesQuery = exercisesQuery.Where(e => e.TrainingSession.Started <= endDate);
+            }
+            var exercises = await exercisesQuery.Select(e => new ExerciseStatServiceModel
+            {
+                Id = e.Id,
+                ExerciseNameId = e.ExerciseNameId,
+                Name = e.ExerciseName.Value,
+                DateTime = e.TrainingSession.Started,
+                TrainingSessionId = e.TrainingSessionId,
+                Parameters = e.ExerciseParameters.Select(p => new ExerciseStatParameterServiceModel
+                {
+                    Id = p.Id,
+                    Name = p.ExerciseParameterName.Value,
+                    NameId = p.ExerciseParameterNameId,
+                    Value = p.Value
+                })
+            }).ToListAsync();
+
+            return exercises;
+        }
     }
 }
