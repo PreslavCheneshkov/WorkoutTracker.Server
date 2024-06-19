@@ -21,7 +21,7 @@ public class ExerciseController : WorkoutTrackerController
     }
 
     [HttpPost]
-    [Route("parameter/name/{parameterNameValue}")]
+    [Route("Parameter/Name/{parameterNameValue}")]
     public async Task<IActionResult> ExerciseParameterName(string parameterNameValue)
     {
         if (string.IsNullOrEmpty(parameterNameValue))
@@ -34,7 +34,7 @@ public class ExerciseController : WorkoutTrackerController
     }
 
     [HttpGet]
-    [Route("parameter/name/all")]
+    [Route("Parameter/Name/All")]
     public async Task<IActionResult> ExerciseParameterName()
     {
         var exerciseParameterNames = await _exerciseService.GetExerciseParameterNamesAsync();
@@ -42,7 +42,7 @@ public class ExerciseController : WorkoutTrackerController
     }
 
     [HttpGet]
-    [Route("name")]
+    [Route("Name")]
     public async Task<IActionResult> ExercisNames()
     {
         var exerciseNames = await _exerciseService.GetAllExerciseNamesAsync();
@@ -50,7 +50,7 @@ public class ExerciseController : WorkoutTrackerController
     }
 
     [HttpPost]
-    [Route("name/{nameValue}")]
+    [Route("Name/{nameValue}")]
     public async Task<IActionResult> ExerciseName(string nameValue)
     {
         if (string.IsNullOrEmpty(nameValue))
@@ -76,5 +76,18 @@ public class ExerciseController : WorkoutTrackerController
             }).ToList()
         });
         return Ok(id);
+    }
+
+    [HttpGet]
+    [Route("Stats")]
+    public async Task<IActionResult> Stats(int? exerciseNameId, DateTime? startDate, DateTime? endDate)
+    {
+        if (exerciseNameId is null)
+            return BadRequest();
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
+            return Unauthorized();
+        var stats = await _exerciseService.GetStatsForExerciseAsync(exerciseNameId.Value, userId, startDate, endDate);
+        return Ok(stats);
     }
 }
