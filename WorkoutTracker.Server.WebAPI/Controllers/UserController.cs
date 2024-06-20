@@ -52,4 +52,32 @@ public class UserController : WorkoutTrackerController
         var username = await _userService.GetUsernameAsync(userId);
         return Ok(username);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> PersonalStats([FromBody]PersonalStatsInputModel statsInput)
+    {
+        if (statsInput is null)
+        {
+            return BadRequest();
+        }
+        if (statsInput.WeightKg is null && statsInput.BodyFatPercentage is null)
+        {
+            return BadRequest();
+        }
+        if (statsInput.WeightKg != null && statsInput.WeightKg < 0)
+        {
+            return BadRequest();
+        }
+        if (statsInput.BodyFatPercentage != null && statsInput.BodyFatPercentage < 0)
+        {
+            return BadRequest();
+        }
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+        await _userService.SetPersonalStats(statsInput.WeightKg, statsInput.BodyFatPercentage, userId);
+        return Ok();
+    }
 }
