@@ -12,7 +12,7 @@ public interface IUserService
 
     Task<PersonalStatsServiceModel> GetPersonalStatsAsync(string userId);
 
-    Task<IEnumerable<WeightHistoryDataPointServiceModel>> GetWeightHistory(string userId);
+    Task<IEnumerable<WeightHistoryDataPointServiceModel>> GetWeightHistoryAsync(string userId);
 
-    Task<IEnumerable<BodyfatHistoryDataPointServiceModel>> GetBodyfatPercentageHistory(string userId);
+    Task<IEnumerable<BodyfatHistoryDataPointServiceModel>> GetBodyfatPercentageHistoryAsync(string userId);
 }

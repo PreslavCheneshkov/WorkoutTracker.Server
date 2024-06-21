@@ -32,7 +32,7 @@ public class UserService : IUserService
         return true;
     }
 
-    public async Task<IEnumerable<BodyfatHistoryDataPointServiceModel>> GetBodyfatPercentageHistory(string userId)
+    public async Task<IEnumerable<BodyfatHistoryDataPointServiceModel>> GetBodyfatPercentageHistoryAsync(string userId)
     {
         return await _db.PersonalStats.Where(ps => ps.WorkoutTrackerUserId == userId && ps.BodyFatPercentage != null)
             .Select(ps => new BodyfatHistoryDataPointServiceModel
@@ -43,7 +43,7 @@ public class UserService : IUserService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<WeightHistoryDataPointServiceModel>> GetWeightHistory(string userId)
+    public async Task<IEnumerable<WeightHistoryDataPointServiceModel>> GetWeightHistoryAsync(string userId)
     {
         return await _db.PersonalStats.Where(ps => ps.WorkoutTrackerUserId == userId && ps.WeightKilograms != null)
             .Select(ps => new WeightHistoryDataPointServiceModel
