@@ -52,4 +52,60 @@ public class UserController : WorkoutTrackerController
         var username = await _userService.GetUsernameAsync(userId);
         return Ok(username);
     }
+
+    [HttpPost]
+    [Route("PersonalStats")]
+    public async Task<IActionResult> SetPersonalStats([FromBody]PersonalStatsInputModel statsInput)
+    {
+        if (statsInput is null)
+        {
+            return BadRequest();
+        }
+        if (statsInput.WeightKg is null && statsInput.BodyFatPercentage is null)
+        {
+            return BadRequest();
+        }
+        if (statsInput.WeightKg != null && statsInput.WeightKg < 0)
+        {
+            return BadRequest();
+        }
+        if (statsInput.BodyFatPercentage != null && statsInput.BodyFatPercentage < 0)
+        {
+            return BadRequest();
+        }
+        var userId = _userManager.GetUserId(User);
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+        await _userService.SetPersonalStats(statsInput.WeightKg, statsInput.BodyFatPercentage, userId);
+        return Ok();
+    }
+
+    [HttpGet]
+    [Route("PersonalStats")]
+    public async Task<IActionResult> GetPersonalStats()
+    {
+        var userId = _userManager.GetUserId(User);
+        var currentStats = await _userService.GetPersonalStatsAsync(userId!);
+        return Ok(currentStats);
+    }
+
+    [HttpGet]
+    [Route("WeightHistory")]
+    public async Task<IActionResult> GetWeightHistory()
+    {
+        var userId = _userManager.GetUserId(User);
+        var weightHistory = await _userService.GetWeightHistoryAsync(userId!);
+        return Ok(weightHistory);
+    }
+
+    [HttpGet]
+    [Route("BodyFatPercentageHistory")]
+    public async Task<IActionResult> GetBodyFatPercentageHistory()
+    {
+        var userId = _userManager.GetUserId(User);
+        var bodyFatPercentageHistory = await _userService.GetBodyfatPercentageHistoryAsync(userId!);
+        return Ok(bodyFatPercentageHistory);
+    }
 }
