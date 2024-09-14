@@ -6,10 +6,18 @@ namespace WorkoutTracker.Server.WebAPI.Controllers
     [Route("[controller]")]
     public class HomeController : Controller
     {
+        private readonly IConfiguration _configuration;
+
+        public HomeController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         [HttpGet(Name = "Index")]
         public IActionResult Index()
         {
-            return Ok($"Works!");
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            return Ok($"Works! Connection String for DefaultConnection: {connectionString}");
         }
     }
 }
