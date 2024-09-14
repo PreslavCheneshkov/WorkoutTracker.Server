@@ -61,7 +61,6 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseDeveloperExceptionPage();
 
         app.MapControllers();
 
