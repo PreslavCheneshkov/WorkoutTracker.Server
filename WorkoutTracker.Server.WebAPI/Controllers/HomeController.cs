@@ -12,12 +12,11 @@ namespace WorkoutTracker.Server.WebAPI.Controllers
         {
             _configuration = configuration;
         }
+
         [HttpGet(Name = "Index")]
         public IActionResult Index()
         {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-
-            return Ok($"Works! Connection String for DefaultConnection: {connectionString}");
+            return Ok($"Works!");
         }
     }
 }
