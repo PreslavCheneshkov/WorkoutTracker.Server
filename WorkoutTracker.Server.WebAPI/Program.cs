@@ -50,7 +50,6 @@ public class Program
 
         app.UseSwagger();
         app.UseSwaggerUI();
-
         app.UseCors(options =>
         {
             options.AllowAnyOrigin();
@@ -62,6 +61,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseDeveloperExceptionPage();
 
         app.MapControllers();
 
