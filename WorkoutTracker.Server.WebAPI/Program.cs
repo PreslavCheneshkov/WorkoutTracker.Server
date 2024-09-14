@@ -17,7 +17,7 @@ public class Program
 
         // Add services to the container.
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<WorkoutTrackerDbContext>(options => options.UseSqlServer(connectionString));
+        builder.Services.AddDbContext<WorkoutTrackerDbContext>(options => options.UseNpgsql(connectionString));
 
         builder.Services.AddAuthorization();
         builder.Services.AddIdentityApiEndpoints<WorkoutTrackerUser>(options =>
